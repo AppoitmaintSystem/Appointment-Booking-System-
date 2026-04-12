@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Menu.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.appointment.app</a> &gt; <span class="el_source">Menu.java</span></div><h1>Menu.java</h1><pre class="source lang-java linenums">package com.appointment.app;
+
+import java.util.Scanner;
+
+import com.appointment.admin.Admin;
+import com.appointment.model.Appointment;
+import com.appointment.model.User;
+import com.appointment.notification.RealEmailNotification;
+import com.appointment.service.BookingService;
+
+<span class="nc" id="L11">public class Menu {</span>
+
+    public static void main(String[] args) {
+
+<span class="fc" id="L15">        Scanner scanner = new Scanner(System.in);</span>
+<span class="fc" id="L16">        BookingService service = new BookingService();</span>
+
+<span class="fc" id="L18">        RealEmailNotification emailService = new RealEmailNotification(</span>
+                &quot;sara7maher@gmail.com&quot;,
+                &quot;sqzmwcqvhasndbis&quot;
+        );
+
+<span class="fc" id="L23">        Admin admin = new Admin();</span>
+
+        while (true) {
+<span class="fc" id="L26">            System.out.println(&quot;\nAre you Admin or User?&quot;);</span>
+<span class="fc" id="L27">            System.out.println(&quot;1. Admin&quot;);</span>
+<span class="fc" id="L28">            System.out.println(&quot;2. User&quot;);</span>
+<span class="fc" id="L29">            System.out.println(&quot;3. Exit&quot;);</span>
+<span class="fc" id="L30">            System.out.print(&quot;Choose an option: &quot;);</span>
+
+<span class="pc bpc" id="L32" title="1 of 2 branches missed.">            if (!scanner.hasNextInt()) {</span>
+<span class="nc" id="L33">                break;</span>
+            }
+<span class="fc" id="L35">            int role = scanner.nextInt();</span>
+
+<span class="fc bfc" id="L37" title="All 4 branches covered.">            switch (role) {</span>
+
+                case 1:
+<span class="fc" id="L40">                    System.out.print(&quot;Enter username: &quot;);</span>
+<span class="fc" id="L41">                    String username = scanner.next();</span>
+
+<span class="fc" id="L43">                    System.out.print(&quot;Enter password: &quot;);</span>
+<span class="fc" id="L44">                    String password = scanner.next();</span>
+
+<span class="fc bfc" id="L46" title="All 2 branches covered.">                    if (!admin.login(username, password)) {</span>
+<span class="fc" id="L47">                        break;</span>
+                    }
+
+                    while (true) {
+<span class="fc" id="L51">                        System.out.println(&quot;\n=== Admin Menu ===&quot;);</span>
+<span class="fc" id="L52">                        System.out.println(&quot;1. Add Available Slot&quot;);</span>
+<span class="fc" id="L53">                        System.out.println(&quot;2. View Available Slots&quot;);</span>
+<span class="fc" id="L54">                        System.out.println(&quot;3. Logout&quot;);</span>
+<span class="fc" id="L55">                        System.out.println(&quot;4. Back&quot;);</span>
+<span class="fc" id="L56">                        System.out.print(&quot;Choose an option: &quot;);</span>
+
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">                        if (!scanner.hasNextInt()) {</span>
+<span class="nc" id="L59">                            break;</span>
+                        }
+<span class="fc" id="L61">                        int adminChoice = scanner.nextInt();</span>
+
+<span class="fc bfc" id="L63" title="All 5 branches covered.">                        switch (adminChoice) {</span>
+                            case 1:
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">                                if (!admin.isLoggedIn()) {</span>
+<span class="nc" id="L66">                                    System.out.println(&quot;You must login first.&quot;);</span>
+<span class="nc" id="L67">                                    break;</span>
+                                }
+<span class="fc" id="L69">                                System.out.print(&quot;Enter time to add: &quot;);</span>
+<span class="fc" id="L70">                                int adminTime = scanner.nextInt();</span>
+<span class="fc" id="L71">                                service.addAvailableSlot(adminTime);</span>
+<span class="fc" id="L72">                                break;</span>
+
+                            case 2:
+<span class="pc bpc" id="L75" title="1 of 2 branches missed.">                                if (!admin.isLoggedIn()) {</span>
+<span class="nc" id="L76">                                    System.out.println(&quot;You must login first.&quot;);</span>
+<span class="nc" id="L77">                                    break;</span>
+                                }
+<span class="fc" id="L79">                                service.viewAvailableSlots();</span>
+<span class="fc" id="L80">                                break;</span>
+
+                            case 3:
+<span class="fc" id="L83">                                admin.logout();</span>
+<span class="fc" id="L84">                                break;</span>
+
+                            case 4:
+<span class="fc" id="L87">                                break;</span>
+
+                            default:
+<span class="fc" id="L90">                                System.out.println(&quot;Invalid choice.&quot;);</span>
+                        }
+
+<span class="fc bfc" id="L93" title="All 4 branches covered.">                        if (adminChoice == 4 || !admin.isLoggedIn()) {</span>
+<span class="fc" id="L94">                            break;</span>
+                        }
+<span class="fc" id="L96">                    }</span>
+                    break;
+
+                case 2:
+                    while (true) {
+<span class="fc" id="L101">                        System.out.println(&quot;\n=== User Menu ===&quot;);</span>
+<span class="fc" id="L102">                        System.out.println(&quot;1. Book Appointment&quot;);</span>
+<span class="fc" id="L103">                        System.out.println(&quot;2. Cancel Appointment&quot;);</span>
+<span class="fc" id="L104">                        System.out.println(&quot;3. View Schedule&quot;);</span>
+<span class="fc" id="L105">                        System.out.println(&quot;4. View Available Slots&quot;);</span>
+<span class="fc" id="L106">                        System.out.println(&quot;5. Modify Appointment&quot;);</span>
+<span class="fc" id="L107">                        System.out.println(&quot;6. Exit&quot;);</span>
+<span class="fc" id="L108">                        System.out.print(&quot;Choose an option: &quot;);</span>
+
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">                        if (!scanner.hasNextInt()) {</span>
+<span class="nc" id="L111">                            break;</span>
+                        }
+<span class="fc" id="L113">                        int userChoice = scanner.nextInt();</span>
+
+<span class="fc bfc" id="L115" title="All 7 branches covered.">                        switch (userChoice) {</span>
+
+                            case 1:
+<span class="fc" id="L118">                                System.out.print(&quot;Enter user ID: &quot;);</span>
+<span class="fc" id="L119">                                int id = scanner.nextInt();</span>
+<span class="fc" id="L120">                                scanner.nextLine();</span>
+
+<span class="fc" id="L122">                                System.out.print(&quot;Enter name: &quot;);</span>
+<span class="fc" id="L123">                                String name = scanner.nextLine();</span>
+
+<span class="fc" id="L125">                                System.out.print(&quot;Enter participants: &quot;);</span>
+<span class="fc" id="L126">                                int participants = scanner.nextInt();</span>
+
+<span class="fc" id="L128">                                User user = new User(id, name, participants);</span>
+
+<span class="fc" id="L130">                                System.out.print(&quot;Enter available time to book: &quot;);</span>
+<span class="fc" id="L131">                                int time = scanner.nextInt();</span>
+
+<span class="fc" id="L133">                                Appointment appt = service.bookFromAvailableSlot(time, user);</span>
+
+<span class="pc bpc" id="L135" title="1 of 2 branches missed.">                                if (appt != null) {</span>
+<span class="fc" id="L136">                                    System.out.println(&quot;Appointment booked!&quot;);</span>
+
+<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                                    if (!System.getProperty(&quot;testMode&quot;, &quot;false&quot;).equals(&quot;true&quot;)) {</span>
+<span class="nc" id="L139">                                        emailService.sendEmail(</span>
+                                                &quot;sara7maher@gmail.com&quot;,
+                                                &quot;Appointment Confirmation&quot;,
+                                                &quot;Hello &quot; + name + &quot;,\n\nYour appointment has been booked successfully.\nTime: &quot; + time + &quot;\n\nThank you!&quot;
+                                        );
+                                    }
+                                } else {
+<span class="nc" id="L146">                                    System.out.println(&quot;Booking failed. Time may not be available.&quot;);</span>
+                                }
+<span class="nc" id="L148">                                break;</span>
+
+                            case 2:
+<span class="fc" id="L151">                                System.out.print(&quot;Enter time to cancel: &quot;);</span>
+<span class="fc" id="L152">                                int cancelTime = scanner.nextInt();</span>
+
+<span class="fc" id="L154">                                Appointment apptToCancel = service.findAppointmentByTime(cancelTime);</span>
+
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">                                if (apptToCancel != null) {</span>
+<span class="nc" id="L157">                                    service.cancel(cancelTime);</span>
+
+<span class="nc" id="L159">                                    String userName = apptToCancel.getUser().getName();</span>
+
+<span class="nc bnc" id="L161" title="All 2 branches missed.">                                    if (!System.getProperty(&quot;testMode&quot;, &quot;false&quot;).equals(&quot;true&quot;)) {</span>
+<span class="nc" id="L162">                                        emailService.sendEmail(</span>
+                                                &quot;sara7maher@gmail.com&quot;,
+                                                &quot;Appointment Cancellation&quot;,
+                                                &quot;Hello &quot; + userName + &quot;,\n\nYour appointment at time &quot;
+                                                        + cancelTime + &quot; has been canceled.\n\nThank you!&quot;
+                                        );
+                                    }
+<span class="nc" id="L169">                                } else {</span>
+<span class="fc" id="L170">                                    System.out.println(&quot;No appointment found at this time.&quot;);</span>
+                                }
+<span class="fc" id="L172">                                break;</span>
+
+                            case 3:
+<span class="fc" id="L175">                                service.printSchedule();</span>
+<span class="fc" id="L176">                                break;</span>
+
+                            case 4:
+<span class="fc" id="L179">                                service.viewAvailableSlots();</span>
+<span class="fc" id="L180">                                break;</span>
+
+                            case 5:
+<span class="fc" id="L183">                                System.out.print(&quot;Enter old time: &quot;);</span>
+<span class="fc" id="L184">                                int oldTime = scanner.nextInt();</span>
+
+<span class="fc" id="L186">                                System.out.print(&quot;Enter new time: &quot;);</span>
+<span class="fc" id="L187">                                int newTime = scanner.nextInt();</span>
+
+<span class="fc" id="L189">                                Appointment oldAppt = service.findAppointmentByTime(oldTime);</span>
+
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">                                if (oldAppt != null) {</span>
+<span class="fc" id="L192">                                    String userName = oldAppt.getUser().getName();</span>
+
+<span class="fc" id="L194">                                    Appointment updated = service.modify(oldTime, newTime);</span>
+
+<span class="pc bpc" id="L196" title="1 of 2 branches missed.">                                    if (updated != null) {</span>
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">                                        if (!System.getProperty(&quot;testMode&quot;, &quot;false&quot;).equals(&quot;true&quot;)) {</span>
+<span class="nc" id="L198">                                            emailService.sendEmail(</span>
+                                                    &quot;sara7maher@gmail.com&quot;,
+                                                    &quot;Appointment Updated&quot;,
+                                                    &quot;Hello &quot; + userName + &quot;,\n\nYour appointment has been updated.\nOld time: &quot;
+                                                            + oldTime + &quot;\nNew time: &quot; + newTime + &quot;\n\nThank you!&quot;
+                                            );
+                                        }
+                                    }
+<span class="fc" id="L206">                                } else {</span>
+<span class="nc" id="L207">                                    System.out.println(&quot;No appointment found at this time.&quot;);</span>
+                                }
+<span class="nc" id="L209">                                break;</span>
+
+                            case 6:
+<span class="fc" id="L212">                                break;</span>
+
+                            default:
+<span class="fc" id="L215">                                System.out.println(&quot;Invalid choice.&quot;);</span>
+                        }
+
+<span class="fc bfc" id="L218" title="All 2 branches covered.">                        if (userChoice == 6) {</span>
+<span class="fc" id="L219">                            break;</span>
+                        }
+<span class="fc" id="L221">                    }</span>
+                    break;
+
+                case 3:
+<span class="fc" id="L225">                    System.out.println(&quot;Goodbye!&quot;);</span>
+<span class="fc" id="L226">                    return;</span>
+
+                default:
+<span class="fc" id="L229">                    System.out.println(&quot;Invalid choice.&quot;);</span>
+            }
+<span class="fc" id="L231">        }</span>
+<span class="nc" id="L232">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

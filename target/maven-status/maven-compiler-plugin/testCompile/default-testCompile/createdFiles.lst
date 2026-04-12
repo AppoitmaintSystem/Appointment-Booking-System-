@@ -1,0 +1,10 @@
+com\appointment\test\TimeSlotTest.class
+com\appointment\test\AdminTest.class
+com\appointment\test\AppointmentTypeTest.class
+com\appointment\test\RulesTest.class
+com\appointment\test\MenuTest.class
+com\appointment\test\ScheduleTest.class
+com\appointment\test\AppointmentTest.class
+com\appointment\test\NotificationTest.class
+com\appointment\test\BookingServiceTest.class
+com\appointment\test\UserTest.class

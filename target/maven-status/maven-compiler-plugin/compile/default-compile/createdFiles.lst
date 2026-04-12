@@ -1,0 +1,16 @@
+com\appointment\notification\ObserverInterface.class
+com\appointment\model\Urgent.class
+com\appointment\notification\EmailNotification.class
+com\appointment\rules\BookingRuleStrategy.class
+com\appointment\service\BookingService.class
+com\appointment\rules\CapacityRule.class
+com\appointment\notification\RealEmailNotification.class
+com\appointment\model\Appointment.class
+com\appointment\rules\DurationRule.class
+com\appointment\model\Schedule.class
+com\appointment\model\AppointmentType.class
+com\appointment\notification\RealEmailNotification$1.class
+com\appointment\model\TimeSlot.class
+com\appointment\model\User.class
+com\appointment\admin\Admin.class
+com\appointment\app\Menu.class

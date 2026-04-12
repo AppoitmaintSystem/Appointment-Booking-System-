@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookingService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.appointment.service</a> &gt; <span class="el_source">BookingService.java</span></div><h1>BookingService.java</h1><pre class="source lang-java linenums">package com.appointment.service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.appointment.admin.Admin;
+import com.appointment.model.*;
+import com.appointment.rules.BookingRuleStrategy;
+
+<span class="fc" id="L10">public class BookingService {</span>
+
+<span class="fc" id="L12">    private List&lt;BookingRuleStrategy&gt; rules = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L13">    private Appointment[] appointments = new Appointment[50];</span>
+<span class="fc" id="L14">    private TimeSlot[] availableSlots = new TimeSlot[50];</span>
+
+<span class="fc" id="L16">    private int count = 0;</span>
+<span class="fc" id="L17">    private int slotCount = 0;</span>
+
+    public void addRule(BookingRuleStrategy rule) {
+<span class="fc" id="L20">        rules.add(rule);</span>
+<span class="fc" id="L21">    }</span>
+
+    public boolean addAvailableSlot(int time) {
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        for (int i = 0; i &lt; slotCount; i++) {</span>
+<span class="pc bpc" id="L25" title="1 of 2 branches missed.">            if (availableSlots[i] != null &amp;&amp;</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">                availableSlots[i].getStartTime().equals(String.valueOf(time))) {</span>
+<span class="fc" id="L27">                System.out.println(&quot;Slot already exists.&quot;);</span>
+<span class="fc" id="L28">                return false;</span>
+            }
+        }
+
+<span class="fc" id="L32">        availableSlots[slotCount++] = new TimeSlot(String.valueOf(time), 60);</span>
+<span class="fc" id="L33">        System.out.println(&quot;Available slot added at time: &quot; + time);</span>
+<span class="fc" id="L34">        return true;</span>
+    }
+
+    public Appointment bookFromAvailableSlot(int time, User user) {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; slotCount; i++) {</span>
+<span class="fc" id="L39">            TimeSlot slot = availableSlots[i];</span>
+
+<span class="pc bpc" id="L41" title="1 of 2 branches missed.">            if (slot != null &amp;&amp;</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">                slot.getStartTime().equals(String.valueOf(time)) &amp;&amp;</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">                !slot.isBooked()) {</span>
+
+<span class="fc" id="L45">                Appointment appt = new Appointment(&quot;N/A&quot;, slot, user);</span>
+
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                for (BookingRuleStrategy rule : rules) {</span>
+<span class="pc bpc" id="L48" title="1 of 2 branches missed.">                    if (!rule.isValid(appt)) {</span>
+<span class="fc" id="L49">                        return null;</span>
+                    }
+<span class="nc" id="L51">                }</span>
+
+<span class="fc" id="L53">                slot.setBooked(true);</span>
+<span class="fc" id="L54">                appointments[count++] = appt;</span>
+<span class="fc" id="L55">                return appt;</span>
+            }
+        }
+
+<span class="fc" id="L59">        return null;</span>
+    }
+
+    public Appointment modify(int oldTime, int newTime) {
+<span class="fc" id="L63">        Appointment oldAppt = findAppointmentByTime(oldTime);</span>
+
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (oldAppt == null) {</span>
+<span class="fc" id="L66">            System.out.println(&quot;No appointment found at this time.&quot;);</span>
+<span class="fc" id="L67">            return null;</span>
+        }
+
+<span class="fc" id="L70">        User user = oldAppt.getUser();</span>
+
+<span class="fc" id="L72">        cancel(oldTime);</span>
+
+<span class="fc" id="L74">        Appointment newAppt = bookFromAvailableSlot(newTime, user);</span>
+
+<span class="pc bpc" id="L76" title="1 of 2 branches missed.">        if (newAppt != null) {</span>
+<span class="fc" id="L77">            System.out.println(&quot;Appointment modified successfully!&quot;);</span>
+<span class="fc" id="L78">            return newAppt;</span>
+        } else {
+<span class="nc" id="L80">            System.out.println(&quot;Modification failed.&quot;);</span>
+<span class="nc" id="L81">            return null;</span>
+        }
+    }
+
+    public void cancel(int cancelTime) {
+<span class="fc" id="L86">        boolean found = false;</span>
+
+<span class="pc bfc" id="L88" title="All 2 branches covered.">        for (int i = 0; i &lt; count; i++) {</span>
+<span class="fc" id="L89">            Appointment a = appointments[i];</span>
+
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">            if (a != null &amp;&amp;</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">                a.getSlot().getStartTime().equals(String.valueOf(cancelTime))) {</span>
+
+<span class="fc" id="L94">                a.getSlot().setBooked(false);</span>
+<span class="fc" id="L95">                appointments[i] = null;</span>
+<span class="fc" id="L96">                found = true;</span>
+<span class="fc" id="L97">                System.out.println(&quot;Appointment canceled!&quot;);</span>
+<span class="fc" id="L98">                break;</span>
+            }
+        }
+
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (!found) {</span>
+<span class="fc" id="L103">            System.out.println(&quot;No appointment found at this time.&quot;);</span>
+        }
+<span class="fc" id="L105">    }</span>
+
+    public void printSchedule() {
+<span class="fc" id="L108">        boolean hasAppointments = false;</span>
+
+<span class="pc bfc" id="L110" title="All 2 branches covered.">        for (int i = 0; i &lt; count; i++) {</span>
+<span class="pc bpc" id="L111" title="1 of 2 branches missed.">            if (appointments[i] != null) {</span>
+<span class="fc" id="L112">                hasAppointments = true;</span>
+<span class="fc" id="L113">                break;</span>
+            }
+        }
+
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (!hasAppointments) {</span>
+<span class="fc" id="L118">            System.out.println(&quot;No appointments scheduled.&quot;);</span>
+<span class="fc" id="L119">            return;</span>
+        }
+
+<span class="fc" id="L122">        System.out.println(&quot;=== Schedule ===&quot;);</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (int i = 0; i &lt; count; i++) {</span>
+<span class="fc" id="L124">            Appointment a = appointments[i];</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">            if (a != null) {</span>
+<span class="fc" id="L126">                System.out.println(&quot;User: &quot; + a.getUser().getName()</span>
+<span class="fc" id="L127">                        + &quot; | Time: &quot; + a.getSlot().getStartTime()</span>
+<span class="fc" id="L128">                        + &quot; | Date: &quot; + a.getDate());</span>
+            }
+        }
+<span class="fc" id="L131">    }</span>
+
+    public void viewAvailableSlots() {
+<span class="fc" id="L134">        System.out.println(&quot;=== Available Slots ===&quot;);</span>
+
+<span class="fc" id="L136">        boolean hasAvailable = false;</span>
+
+<span class="fc bfc" id="L138" title="All 2 branches covered.">        for (int i = 0; i &lt; slotCount; i++) {</span>
+<span class="fc" id="L139">            TimeSlot slot = availableSlots[i];</span>
+
+<span class="pc bpc" id="L141" title="2 of 4 branches missed.">            if (slot != null &amp;&amp; !slot.isBooked()) {</span>
+<span class="fc" id="L142">                System.out.println(&quot;Time: &quot; + slot.getStartTime());</span>
+<span class="fc" id="L143">                hasAvailable = true;</span>
+            }
+        }
+
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (!hasAvailable) {</span>
+<span class="fc" id="L148">            System.out.println(&quot;No available slots.&quot;);</span>
+        }
+<span class="fc" id="L150">    }</span>
+
+    public Appointment findAppointmentByTime(int time) {
+<span class="fc bfc" id="L153" title="All 2 branches covered.">        for (int i = 0; i &lt; count; i++) {</span>
+<span class="fc" id="L154">            Appointment a = appointments[i];</span>
+
+<span class="fc bfc" id="L156" title="All 2 branches covered.">            if (a != null &amp;&amp;</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">                a.getSlot().getStartTime().equals(String.valueOf(time))) {</span>
+<span class="fc" id="L158">                return a;</span>
+            }
+        }
+<span class="fc" id="L161">        return null;</span>
+    }
+
+    public void adminCancel(Admin admin, Appointment appt) {
+<span class="fc bfc" id="L165" title="All 2 branches covered.">        if (!admin.isLoggedIn()) {</span>
+<span class="fc" id="L166">            throw new RuntimeException(&quot;Admin must be logged in&quot;);</span>
+        }
+
+<span class="fc" id="L169">        appt.getSlot().setBooked(false);</span>
+
+<span class="pc bpc" id="L171" title="1 of 2 branches missed.">        for (int i = 0; i &lt; count; i++) {</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">            if (appointments[i] == appt) {</span>
+<span class="fc" id="L173">                appointments[i] = null;</span>
+<span class="fc" id="L174">                break;</span>
+            }
+        }
+<span class="fc" id="L177">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

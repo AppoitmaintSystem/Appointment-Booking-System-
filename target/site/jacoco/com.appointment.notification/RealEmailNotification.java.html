@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RealEmailNotification.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AppointmentSystem</a> &gt; <a href="index.source.html" class="el_package">com.appointment.notification</a> &gt; <span class="el_source">RealEmailNotification.java</span></div><h1>RealEmailNotification.java</h1><pre class="source lang-java linenums">package com.appointment.notification;
+
+import java.util.Properties;
+
+import jakarta.mail.Message;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+
+public class RealEmailNotification {
+
+    private String senderEmail;
+    private String appPassword;
+
+<span class="fc" id="L17">    public RealEmailNotification(String senderEmail, String appPassword) {</span>
+<span class="fc" id="L18">        this.senderEmail = senderEmail;</span>
+<span class="fc" id="L19">        this.appPassword = appPassword;</span>
+<span class="fc" id="L20">    }</span>
+
+    public void sendEmail(String receiverEmail, String subject, String body) {
+<span class="nc" id="L23">        Properties props = new Properties();</span>
+<span class="nc" id="L24">        props.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L25">        props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;);</span>
+<span class="nc" id="L26">        props.put(&quot;mail.smtp.host&quot;, &quot;smtp.gmail.com&quot;);</span>
+<span class="nc" id="L27">        props.put(&quot;mail.smtp.port&quot;, &quot;587&quot;);</span>
+
+<span class="nc" id="L29">        Session session = Session.getInstance(props, new jakarta.mail.Authenticator() {</span>
+            protected PasswordAuthentication getPasswordAuthentication() {
+<span class="nc" id="L31">                return new PasswordAuthentication(senderEmail, appPassword);</span>
+            }
+        });
+
+        try {
+<span class="nc" id="L36">            Message message = new MimeMessage(session);</span>
+<span class="nc" id="L37">            message.setFrom(new InternetAddress(senderEmail));</span>
+<span class="nc" id="L38">            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverEmail));</span>
+<span class="nc" id="L39">            message.setSubject(subject);</span>
+<span class="nc" id="L40">            message.setText(body);</span>
+
+<span class="nc" id="L42">            Transport.send(message);</span>
+<span class="nc" id="L43">            System.out.println(&quot;Email sent successfully.&quot;);</span>
+<span class="nc" id="L44">        } catch (Exception e) {</span>
+<span class="nc" id="L45">            System.out.println(&quot;Failed to send email.&quot;);</span>
+<span class="nc" id="L46">            e.printStackTrace();</span>
+<span class="nc" id="L47">        }</span>
+<span class="nc" id="L48">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
