@@ -14,7 +14,7 @@ public class Appointment {
     public Appointment(User user, TimeSlot slot) {
         this.user = user;
         this.slot = slot;
-        this.date = "N/A"; // أو خليها null حسب مشروعك
+        this.date = "N/A"; 
     }
 
     public TimeSlot getSlot() { 

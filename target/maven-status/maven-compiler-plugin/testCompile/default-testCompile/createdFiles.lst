@@ -3,6 +3,7 @@ com\appointment\test\AdminTest.class
 com\appointment\test\AppointmentTypeTest.class
 com\appointment\test\RulesTest.class
 com\appointment\test\MenuTest.class
+com\appointment\test\NotificationMockTest.class
 com\appointment\test\ScheduleTest.class
 com\appointment\test\AppointmentTest.class
 com\appointment\test\NotificationTest.class
