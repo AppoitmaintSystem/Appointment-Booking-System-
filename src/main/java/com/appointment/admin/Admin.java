@@ -10,6 +10,7 @@ public class Admin {
     private boolean loggedIn = false;
 
     
+    
     private String username = "admin";
     private String adminPassword = "1234";
 
@@ -20,6 +21,7 @@ public class Admin {
 
             loggedIn = true;
 
+            
             
             
             logger.info("Login successful!");
