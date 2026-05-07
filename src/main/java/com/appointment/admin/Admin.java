@@ -1,29 +1,45 @@
 package com.appointment.admin;
 
+import java.util.logging.Logger;
+
 public class Admin {
+
+    private static final Logger logger =
+            Logger.getLogger(Admin.class.getName());
 
     private boolean loggedIn = false;
 
     private String username = "admin";
-    private String password = "1234";
+    private String adminPassword = "1234";
 
     public boolean login(String user, String pass) {
-        if (user.equals(username) && pass.equals(password)) {
+
+        if (user.equals(username) &&
+                pass.equals(adminPassword)) {
+
             loggedIn = true;
-            System.out.println("Login successful!");
+
+            logger.info("Login successful!");
+
             return true;
+
         } else {
-            System.out.println("Invalid credentials.");
+
+            logger.warning("Invalid credentials.");
+
             return false;
         }
     }
 
     public void logout() {
+
         loggedIn = false;
-        System.out.println("Logged out.");
+
+        logger.info("Logged out.");
     }
 
     public boolean isLoggedIn() {
+
         return loggedIn;
     }
 }
