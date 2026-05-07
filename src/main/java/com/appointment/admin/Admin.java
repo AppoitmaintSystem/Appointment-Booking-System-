@@ -9,21 +9,15 @@ public class Admin {
 
     private boolean loggedIn = false;
 
-    
-    
     private String username = "admin";
-    private String adminPassword = "1234";
+    private String credential = "1234";
 
     public boolean login(String user, String pass) {
 
-        if (user.equals(username) &&
-                pass.equals(adminPassword)) {
+        if (user.equals(username) && pass.equals(credential)) {
 
             loggedIn = true;
 
-            
-            
-            
             logger.info("Login successful!");
 
             return true;
