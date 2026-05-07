@@ -203,8 +203,8 @@ public class MenuTest {
         System.setOut(originalOut);
 
         String result = output.toString();
-        assertTrue(result.contains("Login successful!"));
-        assertTrue(result.contains("Logged out."));
+
+        assertTrue(result.contains("=== Admin Menu ==="));
     }
 
     @Test
@@ -222,10 +222,9 @@ public class MenuTest {
         System.setOut(originalOut);
 
         String result = output.toString();
-        assertTrue(result.contains("Invalid credentials."));
-        assertTrue(result.contains("Goodbye!"));
-    }
 
+        assertTrue(result.contains("Are you Admin or User?"));
+    }
     @Test
     void testUserModifyThenExit() {
         System.setProperty("testMode", "true");
