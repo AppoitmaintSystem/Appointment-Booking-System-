@@ -10,13 +10,15 @@ import com.appointment.service.BookingService;
 
 public class Menu {
 
+    private static final String ADMIN_EMAIL = "sara7maher@gmail.com";
+
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
         BookingService service = new BookingService();
 
         RealEmailNotification emailService = new RealEmailNotification(
-                "sara7maher@gmail.com",
+                ADMIN_EMAIL,
                 "sqzmwcqvhasndbis"
         );
 
@@ -137,7 +139,7 @@ public class Menu {
 
                                     if (!System.getProperty("testMode", "false").equals("true")) {
                                         emailService.sendEmail(
-                                                "sara7maher@gmail.com",
+                                                ADMIN_EMAIL,
                                                 "Appointment Confirmation",
                                                 "Hello " + name + ",\n\nYour appointment has been booked successfully.\nTime: " + time + "\n\nThank you!"
                                         );
@@ -160,7 +162,7 @@ public class Menu {
 
                                     if (!System.getProperty("testMode", "false").equals("true")) {
                                         emailService.sendEmail(
-                                                "sara7maher@gmail.com",
+                                                ADMIN_EMAIL,
                                                 "Appointment Cancellation",
                                                 "Hello " + userName + ",\n\nYour appointment at time "
                                                         + cancelTime + " has been canceled.\n\nThank you!"
@@ -196,7 +198,7 @@ public class Menu {
                                     if (updated != null) {
                                         if (!System.getProperty("testMode", "false").equals("true")) {
                                             emailService.sendEmail(
-                                                    "sara7maher@gmail.com",
+                                                    ADMIN_EMAIL,
                                                     "Appointment Updated",
                                                     "Hello " + userName + ",\n\nYour appointment has been updated.\nOld time: "
                                                             + oldTime + "\nNew time: " + newTime + "\n\nThank you!"
