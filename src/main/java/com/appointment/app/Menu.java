@@ -14,17 +14,12 @@ public class Menu {
     private static final String TEST_MODE = "testMode";
 
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
-
         BookingService service = new BookingService();
-
-        RealEmailNotification emailService =
-                new RealEmailNotification(
-                        ADMIN_EMAIL,
-                        "sqzmwcqvhasndbis"
-                );
-
+        RealEmailNotification emailService = new RealEmailNotification(
+                ADMIN_EMAIL,
+                "sqzmwcqvhasndbis"
+        );
         Admin admin = new Admin();
 
         runMainMenu(scanner, service, emailService, admin);
@@ -36,9 +31,7 @@ public class Menu {
             RealEmailNotification emailService,
             Admin admin
     ) {
-
         while (true) {
-
             printMainMenu();
 
             if (!scanner.hasNextInt()) {
@@ -48,7 +41,6 @@ public class Menu {
             int role = scanner.nextInt();
 
             switch (role) {
-
                 case 1:
                     handleAdminLogin(scanner, service, admin);
                     break;
@@ -68,7 +60,6 @@ public class Menu {
     }
 
     private static void printMainMenu() {
-
         System.out.println("\nAre you Admin or User?");
         System.out.println("1. Admin");
         System.out.println("2. User");
@@ -81,7 +72,6 @@ public class Menu {
             BookingService service,
             Admin admin
     ) {
-
         System.out.print("Enter username: ");
         String username = scanner.next();
 
@@ -100,9 +90,7 @@ public class Menu {
             BookingService service,
             Admin admin
     ) {
-
         while (true) {
-
             printAdminMenu();
 
             if (!scanner.hasNextInt()) {
@@ -112,13 +100,12 @@ public class Menu {
             int adminChoice = scanner.nextInt();
 
             switch (adminChoice) {
-
                 case 1:
                     addAvailableSlot(scanner, service, admin);
                     break;
 
                 case 2:
-                    viewAvailableSlots(service, admin);
+                    viewAdminSlots(service, admin);
                     break;
 
                 case 3:
@@ -126,20 +113,19 @@ public class Menu {
                     break;
 
                 case 4:
-                    return;
+                    break;
 
                 default:
                     System.out.println("Invalid choice.");
             }
 
-            if (!admin.isLoggedIn()) {
+            if (adminChoice == 4 || !admin.isLoggedIn()) {
                 break;
             }
         }
     }
 
     private static void printAdminMenu() {
-
         System.out.println("\n=== Admin Menu ===");
         System.out.println("1. Add Available Slot");
         System.out.println("2. View Available Slots");
@@ -153,24 +139,20 @@ public class Menu {
             BookingService service,
             Admin admin
     ) {
-
         if (!admin.isLoggedIn()) {
             System.out.println("You must login first.");
             return;
         }
 
         System.out.print("Enter time to add: ");
-
-        int time = scanner.nextInt();
-
-        service.addAvailableSlot(time);
+        int adminTime = scanner.nextInt();
+        service.addAvailableSlot(adminTime);
     }
 
-    private static void viewAvailableSlots(
+    private static void viewAdminSlots(
             BookingService service,
             Admin admin
     ) {
-
         if (!admin.isLoggedIn()) {
             System.out.println("You must login first.");
             return;
@@ -184,19 +166,16 @@ public class Menu {
             BookingService service,
             RealEmailNotification emailService
     ) {
-
         while (true) {
-
             printUserMenu();
 
             if (!scanner.hasNextInt()) {
                 break;
             }
 
-            int choice = scanner.nextInt();
+            int userChoice = scanner.nextInt();
 
-            switch (choice) {
-
+            switch (userChoice) {
                 case 1:
                     bookAppointment(scanner, service, emailService);
                     break;
@@ -218,16 +197,19 @@ public class Menu {
                     break;
 
                 case 6:
-                    return;
+                    break;
 
                 default:
                     System.out.println("Invalid choice.");
+            }
+
+            if (userChoice == 6) {
+                break;
             }
         }
     }
 
     private static void printUserMenu() {
-
         System.out.println("\n=== User Menu ===");
         System.out.println("1. Book Appointment");
         System.out.println("2. Cancel Appointment");
@@ -243,10 +225,8 @@ public class Menu {
             BookingService service,
             RealEmailNotification emailService
     ) {
-
         System.out.print("Enter user ID: ");
         int id = scanner.nextInt();
-
         scanner.nextLine();
 
         System.out.print("Enter name: ");
@@ -260,21 +240,23 @@ public class Menu {
         System.out.print("Enter available time to book: ");
         int time = scanner.nextInt();
 
-        Appointment appointment =
-                service.bookFromAvailableSlot(time, user);
+        Appointment appt = service.bookFromAvailableSlot(time, user);
 
-        if (appointment == null) {
+        if (appt != null) {
+            System.out.println("Appointment booked!");
 
-            System.out.println(
-                    "Booking failed. Time may not be available."
-            );
-
-            return;
+            if (!isTestMode()) {
+                emailService.sendEmail(
+                        ADMIN_EMAIL,
+                        "Appointment Confirmation",
+                        "Hello " + name
+                                + ",\n\nYour appointment has been booked successfully.\nTime: "
+                                + time + "\n\nThank you!"
+                );
+            }
+        } else {
+            System.out.println("Booking failed. Time may not be available.");
         }
-
-        System.out.println("Appointment booked!");
-
-        sendConfirmationEmail(emailService, name, time);
     }
 
     private static void cancelAppointment(
@@ -282,33 +264,29 @@ public class Menu {
             BookingService service,
             RealEmailNotification emailService
     ) {
-
         System.out.print("Enter time to cancel: ");
-
         int cancelTime = scanner.nextInt();
 
-        Appointment appointment =
-                service.findAppointmentByTime(cancelTime);
+        Appointment apptToCancel = service.findAppointmentByTime(cancelTime);
 
-        if (appointment == null) {
+        if (apptToCancel != null) {
+            service.cancel(cancelTime);
 
-            System.out.println(
-                    "No appointment found at this time."
-            );
+            String userName = apptToCancel.getUser().getName();
 
-            return;
+            if (!isTestMode()) {
+                emailService.sendEmail(
+                        ADMIN_EMAIL,
+                        "Appointment Cancellation",
+                        "Hello " + userName
+                                + ",\n\nYour appointment at time "
+                                + cancelTime
+                                + " has been canceled.\n\nThank you!"
+                );
+            }
+        } else {
+            System.out.println("No appointment found at this time.");
         }
-
-        service.cancel(cancelTime);
-
-        String userName =
-                appointment.getUser().getName();
-
-        sendCancellationEmail(
-                emailService,
-                userName,
-                cancelTime
-        );
     }
 
     private static void modifyAppointment(
@@ -316,116 +294,37 @@ public class Menu {
             BookingService service,
             RealEmailNotification emailService
     ) {
-
         System.out.print("Enter old time: ");
         int oldTime = scanner.nextInt();
 
         System.out.print("Enter new time: ");
         int newTime = scanner.nextInt();
 
-        Appointment oldAppointment =
-                service.findAppointmentByTime(oldTime);
+        Appointment oldAppt = service.findAppointmentByTime(oldTime);
 
-        if (oldAppointment == null) {
+        if (oldAppt != null) {
+            String userName = oldAppt.getUser().getName();
 
-            System.out.println(
-                    "No appointment found at this time."
-            );
+            Appointment updated = service.modify(oldTime, newTime);
 
-            return;
+            if (updated != null && !isTestMode()) {
+                emailService.sendEmail(
+                        ADMIN_EMAIL,
+                        "Appointment Updated",
+                        "Hello " + userName
+                                + ",\n\nYour appointment has been updated.\nOld time: "
+                                + oldTime
+                                + "\nNew time: "
+                                + newTime
+                                + "\n\nThank you!"
+                );
+            }
+        } else {
+            System.out.println("No appointment found at this time.");
         }
-
-        Appointment updated =
-                service.modify(oldTime, newTime);
-
-        if (updated == null) {
-
-            System.out.println(
-                    "Modification failed."
-            );
-
-            return;
-        }
-
-        String userName =
-                oldAppointment.getUser().getName();
-
-        sendUpdateEmail(
-                emailService,
-                userName,
-                oldTime,
-                newTime
-        );
-    }
-
-    private static void sendConfirmationEmail(
-            RealEmailNotification emailService,
-            String name,
-            int time
-    ) {
-
-        if (isTestMode()) {
-            return;
-        }
-
-        emailService.sendEmail(
-                ADMIN_EMAIL,
-                "Appointment Confirmation",
-                "Hello " + name
-                        + ",\n\nYour appointment has been booked successfully.\nTime: "
-                        + time
-                        + "\n\nThank you!"
-        );
-    }
-
-    private static void sendCancellationEmail(
-            RealEmailNotification emailService,
-            String userName,
-            int cancelTime
-    ) {
-
-        if (isTestMode()) {
-            return;
-        }
-
-        emailService.sendEmail(
-                ADMIN_EMAIL,
-                "Appointment Cancellation",
-                "Hello " + userName
-                        + ",\n\nYour appointment at time "
-                        + cancelTime
-                        + " has been canceled.\n\nThank you!"
-        );
-    }
-
-    private static void sendUpdateEmail(
-            RealEmailNotification emailService,
-            String userName,
-            int oldTime,
-            int newTime
-    ) {
-
-        if (isTestMode()) {
-            return;
-        }
-
-        emailService.sendEmail(
-                ADMIN_EMAIL,
-                "Appointment Updated",
-                "Hello " + userName
-                        + ",\n\nYour appointment has been updated.\nOld time: "
-                        + oldTime
-                        + "\nNew time: "
-                        + newTime
-                        + "\n\nThank you!"
-        );
     }
 
     private static boolean isTestMode() {
-
-        return System.getProperty(
-                TEST_MODE,
-                "false"
-        ).equals("true");
+        return System.getProperty(TEST_MODE, "false").equals("true");
     }
 }
