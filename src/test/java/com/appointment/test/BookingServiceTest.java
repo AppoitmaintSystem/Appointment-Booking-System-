@@ -29,7 +29,6 @@ public class BookingServiceTest {
     @Test
     void testBookFromAvailableSlotSuccess() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 2);
 
@@ -54,7 +53,6 @@ public class BookingServiceTest {
     void testBookFromAvailableSlotFailRule() {
         BookingService service = new BookingService();
         service.addRule(appt -> false);
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 2);
 
@@ -66,7 +64,6 @@ public class BookingServiceTest {
     @Test
     void testBookFromAvailableSlotAlreadyBooked() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
 
         User user1 = new User(1, "Sima", 2);
@@ -82,23 +79,20 @@ public class BookingServiceTest {
     @Test
     void testCancelByTimeFound() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 1);
-        Appointment appt = service.bookFromAvailableSlot(10, user);
 
+        Appointment appt = service.bookFromAvailableSlot(10, user);
         assertNotNull(appt);
 
         service.cancel(10);
 
-        Appointment found = service.findAppointmentByTime(10);
-        assertNull(found);
+        assertNull(service.findAppointmentByTime(10));
     }
 
     @Test
     void testCancelByTimeNotFound() {
         BookingService service = new BookingService();
-
         service.cancel(99);
 
         assertNull(service.findAppointmentByTime(99));
@@ -107,42 +101,52 @@ public class BookingServiceTest {
     @Test
     void testPrintScheduleEmpty() {
         BookingService service = new BookingService();
+
         service.printSchedule();
+
+        assertNull(service.findAppointmentByTime(10));
     }
 
     @Test
     void testPrintScheduleWithAppointment() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 1);
-        service.bookFromAvailableSlot(10, user);
 
+        service.bookFromAvailableSlot(10, user);
         service.printSchedule();
+
+        assertNotNull(service.findAppointmentByTime(10));
     }
 
     @Test
     void testViewAvailableSlotsEmpty() {
         BookingService service = new BookingService();
+
         service.viewAvailableSlots();
+
+        assertNull(service.findAppointmentByTime(8));
     }
 
     @Test
     void testViewAvailableSlotsWithData() {
         BookingService service = new BookingService();
 
-        service.addAvailableSlot(8);
-        service.addAvailableSlot(9);
+        assertTrue(service.addAvailableSlot(8));
+        assertTrue(service.addAvailableSlot(9));
 
         service.viewAvailableSlots();
+
+        assertNull(service.findAppointmentByTime(8));
+        assertNull(service.findAppointmentByTime(9));
     }
 
     @Test
     void testFindAppointmentByTimeFound() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 1);
+
         service.bookFromAvailableSlot(10, user);
 
         Appointment found = service.findAppointmentByTime(10);
@@ -163,14 +167,13 @@ public class BookingServiceTest {
     @Test
     void testAdminCancelSuccess() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 1);
+
         Appointment appt = service.bookFromAvailableSlot(10, user);
-
         Admin admin = new Admin();
-        admin.login("admin", "1234");
 
+        admin.login("admin", "1234");
         service.adminCancel(admin, appt);
 
         assertNull(service.findAppointmentByTime(10));
@@ -179,11 +182,10 @@ public class BookingServiceTest {
     @Test
     void testAdminCancelFail() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
         User user = new User(1, "Sima", 1);
-        Appointment appt = service.bookFromAvailableSlot(10, user);
 
+        Appointment appt = service.bookFromAvailableSlot(10, user);
         Admin admin = new Admin();
 
         assertThrows(RuntimeException.class, () -> service.adminCancel(admin, appt));
@@ -192,8 +194,8 @@ public class BookingServiceTest {
     @Test
     void testBookFromAvailableSlotFailBecauseAlreadyCanceledThenRebook() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(10);
+
         User user1 = new User(1, "Sima", 1);
         User user2 = new User(2, "Lina", 1);
 
@@ -203,6 +205,7 @@ public class BookingServiceTest {
         service.cancel(10);
 
         Appointment second = service.bookFromAvailableSlot(10, user2);
+
         assertNotNull(second);
         assertEquals("Lina", second.getUser().getName());
     }
@@ -229,7 +232,6 @@ public class BookingServiceTest {
     @Test
     void testModifyFailNoOldAppointment() {
         BookingService service = new BookingService();
-
         service.addAvailableSlot(11);
 
         Appointment updated = service.modify(10, 11);
