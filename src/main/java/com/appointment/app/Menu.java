@@ -12,6 +12,7 @@ public class Menu {
 
     private static final String ADMIN_EMAIL = "sara7maher@gmail.com";
     private static final String TEST_MODE = "testMode";
+    private static final String CHOOSE_OPTION_MESSAGE = "Choose an option: ";
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -64,7 +65,7 @@ public class Menu {
         System.out.println("1. Admin");
         System.out.println("2. User");
         System.out.println("3. Exit");
-        System.out.print("Choose an option: ");
+        System.out.print(CHOOSE_OPTION_MESSAGE);
     }
 
     private static void handleAdminLogin(
@@ -131,7 +132,7 @@ public class Menu {
         System.out.println("2. View Available Slots");
         System.out.println("3. Logout");
         System.out.println("4. Back");
-        System.out.print("Choose an option: ");
+        System.out.print(CHOOSE_OPTION_MESSAGE);
     }
 
     private static void addAvailableSlot(
@@ -217,7 +218,7 @@ public class Menu {
         System.out.println("4. View Available Slots");
         System.out.println("5. Modify Appointment");
         System.out.println("6. Exit");
-        System.out.print("Choose an option: ");
+        System.out.print(CHOOSE_OPTION_MESSAGE);
     }
 
     private static void bookAppointment(
